@@ -19,8 +19,9 @@
   #define POSIX
 #endif
 
-#include <time.h>
-#include <stdint.h>
+#include <string> // std::string
+#include <ctime>
+#include <cstdint>
 #include <climits>
 
 #ifndef uchar
@@ -103,7 +104,7 @@ typedef struct sLogoSize {
  * markad configuration structure
  */
 typedef struct sMarkAdConfig {
-    char logFile[20] = {};      //!< name of the markad log file
+    std::string logFile;        //!< name of the markad log file
                                 //!<
 
     char logoDirectory[1024];   //!< logo cache directory (defaut /var/lib/markad)

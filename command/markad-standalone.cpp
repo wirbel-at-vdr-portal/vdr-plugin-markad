@@ -3625,7 +3625,7 @@ void cMarkAdStandalone::ProcessFiles() {
 }
 
 
-bool cMarkAdStandalone::SetFileUID(char *file) {
+bool cMarkAdStandalone::SetFileUID(const char *file) {
     if (!file) return false;
     struct stat statbuf;
     if (!stat(directory, &statbuf)) {
@@ -4149,14 +4149,13 @@ cMarkAdStandalone::cMarkAdStandalone(const char *directoryParam, sMarkAdConfig *
     }
 
     if (LOG2REC) {
-        char *fbuf;
-        if (asprintf(&fbuf, "%s/%s", directory, config->logFile) != -1) {
-            ALLOC(strlen(fbuf)+1, "fbuf");
-            if (freopen(fbuf, "w+", stdout)) {};
-            SetFileUID(fbuf);
-            FREE(strlen(fbuf)+1, "fbuf");
-            free(fbuf);
-        }
+        std::string fbuf(directory);
+        fbuf += "/" + config->logFile;
+
+        if (freopen(fbuf.c_str(), "w+", stdout)) {};
+        SetFileUID(fbuf.c_str());
+
+        // fbuf goes out of scope here.
     }
 
     long lb;
@@ -4871,8 +4870,7 @@ int main(int argc, char *argv[]) {
                 config.useVPS = true;
                 break;
             case 15: // --logfile
-                strncpy(config.logFile, optarg, sizeof(config.logFile));
-                config.logFile[sizeof(config.logFile) - 1] = 0;
+                config.logFile = optarg;
                 break;
             case 16: // --autologo
                 if (isnumber(optarg) && atoi(optarg) >= 0 && atoi(optarg) <= 2) config.autoLogo = atoi(optarg);
@@ -4948,9 +4946,8 @@ int main(int argc, char *argv[]) {
     }
 
     // set defaults
-    if (config.logFile[0] == 0) {
-        strncpy(config.logFile, "markad.log", sizeof(config.logFile));
-        config.logFile[sizeof("markad.log") - 1] = 0;
+    if (config.logFile.empty()) {
+        config.logFile = "markad.log";
     }
 
     // do nothing if called from vdr before/after the video is cutted

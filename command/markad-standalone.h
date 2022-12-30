@@ -275,7 +275,7 @@ class cMarkAdStandalone : public cEvaluateChannel {
  * @param file filename
  * @return true if successful, false otherwise
  */
-        bool SetFileUID(char *file);
+        bool SetFileUID(const char *file);
 
 /**
  * process overlap detection with stop/start pair
