@@ -107,7 +107,7 @@ typedef struct sMarkAdConfig {
     std::string logFile;        //!< name of the markad log file
                                 //!<
 
-    char logoDirectory[1024];   //!< logo cache directory (defaut /var/lib/markad)
+    std::string logoDirectory;  //!< logo cache directory (defaut /var/lib/markad)
                                 //!<
 
     char markFileName[1024];    //!< name of the marks file (default marks)

@@ -1151,7 +1151,7 @@ int cMarkAdLogo::Process(const int iFrameBefore, const int iFrameCurrent, const 
         dsyslog("cMarkAdLogo::Process(): video high info missing");
         return LOGO_ERROR;
     }
-    if (!maContext->Config->logoDirectory[0]) {
+    if (maContext->Config->logoDirectory.empty()) {
         dsyslog("cMarkAdLogo::Process(): logoDirectory missing");
         return LOGO_ERROR;
     }
@@ -1173,11 +1173,11 @@ int cMarkAdLogo::Process(const int iFrameBefore, const int iFrameCurrent, const 
                     ALLOC(strlen(buf)+1, "buf");
                     area.corner = -1;
                     bool logoStatus = false;
-                    if (Load(maContext->Config->logoDirectory, buf, 0) == 0) {   // logo cache directory
-                        isyslog("logo for %s %d:%d found in %s", maContext->Info.ChannelName, maContext->Video.Info.AspectRatio.num, maContext->Video.Info.AspectRatio.den, maContext->Config->logoDirectory);
+                    if (Load(maContext->Config->logoDirectory.c_str(), buf, 0) == 0) {   // logo cache directory
+                        isyslog("logo for %s %d:%d found in %s", maContext->Info.ChannelName, maContext->Video.Info.AspectRatio.num, maContext->Video.Info.AspectRatio.den, maContext->Config->logoDirectory.c_str());
                         logoStatus = true;
                         for (int plane = 1; plane < PLANES; plane++) {
-                            if (Load(maContext->Config->logoDirectory, buf, plane) == 0) dsyslog("logo %s for plane %i found in %s", buf, plane, maContext->Config->logoDirectory);
+                            if (Load(maContext->Config->logoDirectory.c_str(), buf, plane) == 0) dsyslog("logo %s for plane %i found in %s", buf, plane, maContext->Config->logoDirectory.c_str());
                         }
                     }
                     else {

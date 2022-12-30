@@ -3746,14 +3746,14 @@ time_t cMarkAdStandalone::GetRecordingStart(time_t start, int fd) {
 
 bool cMarkAdStandalone::CheckLogo() {
     if (!macontext.Config) return false;
-    if (!*macontext.Config->logoDirectory) return false;
+    if (!macontext.Config->logoDirectory.empty()) return false;
     if (!macontext.Info.ChannelName) return false;
     int len=strlen(macontext.Info.ChannelName);
     if (!len) return false;
 
     dsyslog("cMarkAdStandalone::CheckLogo(): using logo directory %s", macontext.Config->logoDirectory);
     dsyslog("cMarkAdStandalone::CheckLogo(): searching logo for %s", macontext.Info.ChannelName);
-    DIR *dir = opendir(macontext.Config->logoDirectory);
+    DIR *dir = opendir(macontext.Config->logoDirectory.c_str());
     if (!dir) return false;
 
     struct dirent *dirent = NULL;
@@ -4591,7 +4591,7 @@ int main(int argc, char *argv[]) {
     config.astopoffs = 0;
     config.posttimer = 600;
     strcpy(config.svdrphost, "127.0.0.1");
-    strcpy(config.logoDirectory, "/var/lib/markad");
+    config.logoDirectory = "/var/lib/markad";
 
     #ifdef WINDOWS
     /* winsock2 needs initialization, if we later support it. */
@@ -4687,11 +4687,7 @@ int main(int argc, char *argv[]) {
                 }
                 break;
             case 'l':
-                if ((strlen(optarg) + 1) > sizeof(config.logoDirectory)) {
-                    fprintf(stderr, "markad: logo path too long: %s\n", optarg);
-                    return 2;
-                }
-                strncpy(config.logoDirectory, optarg, sizeof(config.logoDirectory) - 1);
+                config.logoDirectory = optarg;
                 break;
             case 'p':
                 // --priority
